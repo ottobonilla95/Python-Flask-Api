@@ -1,6 +1,5 @@
 
 from flask import Flask
-from db import db
 from flask_migrate import Migrate
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
@@ -23,9 +22,11 @@ jwt = JWTManager(app)
 app.config.from_object("config")
 
 
-
-migrate = Migrate(app, db)
-
 if __name__ == '__main__':
+    from db import db
     db.init_app(app)
+
+    #Migrate config
+    migrate = Migrate(app, db)
+
     app.run(debug=True)  # important to mention debug=True
