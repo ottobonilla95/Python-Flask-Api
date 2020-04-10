@@ -1,3 +1,4 @@
+import datetime
 from flask_restful import Resource, reqparse
 from flask import request
 from models.user import UserModel
@@ -12,11 +13,13 @@ from flask_jwt_extended import (create_access_token,
                                 get_raw_jwt)
 
 user_schema = UserSchema()
-
+timedelta = datetime.timedelta(minutes=1)
 
 class UserRegister(Resource):
     def post(self):
-        user = user_schema.load(request.get_json())
+        
+        user_json = request.get_json()["userData"]
+        user = user_schema.load(user_json)
 
         if UserModel.find_by_username(user.username):
             return {"message": "A user with that username already exists"}, 400
@@ -54,25 +57,35 @@ class User(Resource):
 class UserLogin(Resource):
     def post(self):
 
-        userRecived = user_schema.load(request.get_json())
+        try:
+            user_json = request.get_json()["userData"]
+            userRecived = user_schema.load(user_json)
 
-        userFound = UserModel.find_by_username(userRecived.username)
+            userFound = UserModel.find_by_username(userRecived.username)
 
-        # this is what the `authenticate()` function did in security.py
-        if userFound and safe_str_cmp(userFound.password, userRecived.password):
-            # identity= is what the identity() function did in security.py—now stored in the JWT
-            access_token = create_access_token(
-                identity=userFound.id, fresh=True)
-            refresh_token = create_refresh_token(userFound.id)
-            return {
-                "user_id": userFound.id,
-                "username": userFound.username,
-                "access_token": access_token,
-                "refresh_token": refresh_token 
-            }, 200
+            # this is what the `authenticate()` function did in security.py
+            if userFound and safe_str_cmp(userFound.password, userRecived.password):
+                # identity= is what the identity() function did in security.py—now stored in the JWT
+                
+                expiration = datetime.datetime.now() + timedelta
 
-        return {"message": "Invalid Credentials!"}, 401
+                access_token = create_access_token(
+                    identity=userFound.id, fresh=True, expires_delta= timedelta)
 
+                refresh_token = create_refresh_token(userFound.id)
+
+                return {
+                    "user_id": userFound.id,
+                    "username": userFound.username,
+                    "access_token": access_token,
+                    "refresh_token": refresh_token, 
+                    "expiration" : expiration.isoformat()
+                }, 200
+
+            return {"message": "Invalid Credentials!"}, 401
+
+        except:
+            return {"message": "Internal Error!"}, 500
 
 class UserLogout(Resource):
     @jwt_required
@@ -93,5 +106,9 @@ class TokenRefresh(Resource):
         refreshed many times over).
         """
         current_user = get_jwt_identity()
-        new_token = create_access_token(identity=current_user, fresh=False)
-        return {'access_token': new_token}, 200
+        new_token = create_access_token(identity=current_user, fresh=False, expires_delta= timedelta)
+        expiration = datetime.datetime.now() + timedelta
+        return {
+            'access_token': new_token,
+            "expiration" : expiration.isoformat()
+            }, 200

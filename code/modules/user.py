@@ -21,5 +21,5 @@ api.add_resource(UserLogin, '/login')
 api.add_resource(UserLogout, '/logout')
 
 #UserTokenRefresh
-api.add_resource(TokenRefresh, '/userrefresh')
+api.add_resource(TokenRefresh, '/tokenrefresh')
 

@@ -1,6 +1,4 @@
-
 from flask import Flask
-from flask_migrate import Migrate
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 
@@ -15,15 +13,14 @@ app.register_blueprint(store_app)
 app.register_blueprint(user_app)
 
 CORS(app)
-# cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 #Config
 jwt = JWTManager(app)
 app.config.from_object("config")
 
-
 if __name__ == '__main__':
     from db import db
+    from flask_migrate import Migrate
     db.init_app(app)
 
     #Migrate config
