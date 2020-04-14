@@ -10,6 +10,7 @@ class StoreModel(db.Model):
     image = db.Column(db.String(255))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'),  nullable=False)
     creation_date = db.Column(db.DateTime, default=datetime.utcnow)
+    items = db.relationship('ItemModel', lazy=True)
 
     @classmethod
     def find_by_id(cls, _id) -> "StoreModel":
@@ -22,6 +23,11 @@ class StoreModel(db.Model):
     @classmethod
     def get_by_user(cls, _user_id) -> None:
         return cls.query.filter_by(user_id=_user_id)
+
+    @classmethod
+    def delete_by_user(cls, _user_id):
+        cls.query.filter_by(user_id=_user_id).delete()
+        db.session.commit()
 
     def delete_from_db(self):
         db.session.delete(self)

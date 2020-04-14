@@ -28,7 +28,6 @@ class Store(Resource):
         store = StoreModel.find_by_id(id)
 
         if store:
-            ItemModel.delete_by_store(store.id)
             store.delete_from_db()
 
         return{'Message': 'Eliminado exitosamente'}, 200
@@ -67,7 +66,6 @@ class Store(Resource):
 
 class StoreList(Resource):
     @classmethod
-    @jwt_required
     def get(cls):
         return {'stores': [store_schema.dump(store) for store in StoreModel.get_all()]}
     

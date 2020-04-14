@@ -20,10 +20,6 @@ app.config.from_object("config")
 
 if __name__ == '__main__':
     from db import db
-    from flask_migrate import Migrate
     db.init_app(app)
-
-    #Migrate config
-    migrate = Migrate(app, db)
 
     app.run(debug=True)  # important to mention debug=True

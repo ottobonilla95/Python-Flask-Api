@@ -25,11 +25,6 @@ class ItemModel(db.Model):
     def get_all(cls):
         return cls.query.all()
 
-    @classmethod
-    def delete_by_store(cls, _store_id):
-        cls.query.filter_by(store_id=_store_id).delete()
-
-
     def save_to_db(self)  -> None:
         db.session.add(self)
         db.session.commit()
