@@ -1,5 +1,9 @@
 from db import db
 from datetime import datetime
+from models.auth.user import UserModel
+from flask_sqlalchemy import Pagination
+import os
+
 
 class StoreModel(db.Model):
 
@@ -9,8 +13,10 @@ class StoreModel(db.Model):
     description = db.Column(db.String(80))
     image = db.Column(db.String(255))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'),  nullable=False)
+    user = db.relationship("UserModel")
     creation_date = db.Column(db.DateTime, default=datetime.utcnow)
-    items = db.relationship('ItemModel', lazy=True)
+    items = db.relationship('ItemModel', lazy=True,
+                            cascade="all, delete-orphan")
 
     @classmethod
     def find_by_id(cls, _id) -> "StoreModel":
@@ -19,10 +25,15 @@ class StoreModel(db.Model):
     @classmethod
     def get_all(cls) -> None:
         return cls.query.all()
-    
+
     @classmethod
-    def get_by_user(cls, _user_id) -> None:
-        return cls.query.filter_by(user_id=_user_id)
+    def get_per_page(cls, page: int) -> Pagination:
+
+        return cls.query.paginate(page, int(os.environ.get("ITEMS_PER_PAGE")), error_out=False)
+
+    @classmethod
+    def get_by_user(cls, _user_id,  page: int) -> None:
+        return cls.query.filter_by(user_id=_user_id).paginate(page, int(os.environ.get("ITEMS_PER_PAGE")), error_out=False)
 
     @classmethod
     def delete_by_user(cls, _user_id):

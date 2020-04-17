@@ -2,14 +2,16 @@ from flask import request
 from flask_restful import Resource
 from models.store.item import ItemModel
 from schemas.store.item import ItemSchema
-from cdhandler import CloudinaryHandler;
+from cdhandler import CloudinaryHandler
 from flask_jwt_extended import jwt_required, fresh_jwt_required
+from flask_babel import gettext
 
 item_schema = ItemSchema()
 
+
 class Item(Resource):
 
-    @jwt_required 
+    @jwt_required
     def get(self, id):
 
         item = ItemModel.find_by_id(id)
@@ -17,21 +19,21 @@ class Item(Resource):
         if item:
             return item_schema.dump(item)
 
-        return {'message': 'Item not found'}, 404
-    
-    @fresh_jwt_required 
+        return {'message': gettext('Item not found')}, 404
+
+    @fresh_jwt_required
     def delete(self, id):
         item = ItemModel.find_by_id(id)
 
         if item:
             item.delete_from_db()
-            return {'message': 'Item deleted'}
+            return {'message':  gettext('Item deleted')}
 
-        return {'message': 'Not found'}
+        return {'message': gettext('Item not found')}
 
-    @fresh_jwt_required 
+    @fresh_jwt_required
     def put(self, id):
-        
+
         item_json = request.get_json()["itemData"]
         item = ItemModel.find_by_id(id)
 
@@ -55,25 +57,23 @@ class Item(Resource):
             item = item_schema.load(item_json)
 
         item.save_to_db()
-        
+
         return {'item': item_schema.dump(item)}, 200
 
 
-
 class ItemList(Resource):
-    
+
     @classmethod
     def get(self, store_id):
         return {'items': [item_schema.dump(item) for item in ItemModel.find_by_store_id(store_id)]}
 
 
 class ItemCreation(Resource):
-    @jwt_required 
+    @jwt_required
     def post(self):
-        
-        item = item_schema.load(request.get_json()["itemData"])        
-        
-        item.save_to_db()
-        return {'item':item_schema.dump(item)},200
 
+        item = item_schema.load(request.get_json()["itemData"])
+
+        item.save_to_db()
+        return {'item': item_schema.dump(item)}, 200
 
