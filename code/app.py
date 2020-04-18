@@ -17,6 +17,9 @@ app.register_blueprint(auth_app)
 CORS(app)
 babel = Babel(app)
 
+@app.route("/ping")
+def test():
+    return {"message":"response"}, 200
 
 @babel.localeselector
 def get_locale():
