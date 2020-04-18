@@ -2,7 +2,7 @@ from flask import Flask, g, request
 from flask_babel import Babel
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
-
+import os
 
 # Modules
 from modules.store import store_app
@@ -18,8 +18,14 @@ CORS(app)
 babel = Babel(app)
 
 @app.route("/ping")
-def test():
+def ping():
     return {"message":"response"}, 200
+
+
+@app.route("/pingenv")
+def pingenv():
+    message = os.environ.get("TEST_MESSAGE")
+    return {"message":message}, 200
 
 @babel.localeselector
 def get_locale():
