@@ -17,6 +17,7 @@ from flask_jwt_extended import (create_access_token,
                                 fresh_jwt_required)
 
 from flask_babel import gettext
+from uuid import uuid4
 
 user_schema = UserSchema()
 timedelta = datetime.timedelta(minutes=1)
@@ -31,15 +32,15 @@ class UserRegister(Resource):
         user_json = request.get_json()["userData"]
         user = user_schema.load(user_json)
 
-        if UserModel.find_by_username(user.username):
-            return {"message": gettext('A user with that username already exists')}, 400
-
-        if UserModel.find_by_email(user.email):
-            return {"message":  gettext('A user with that email already exists')}, 400
-
         try:
+
+            if UserModel.find_by_username(user.username):
+                return {"message": gettext('A user with that username already exists')}, 400
+
+            if UserModel.find_by_email(user.email):
+                return {"message":  gettext('A user with that email already exists')}, 400
+
             # Hash the password
-            original_pass = user.password
             hashed_pass = custom_pbkdf2.hash(user.password)
             user.password = hashed_pass
 
@@ -49,7 +50,7 @@ class UserRegister(Resource):
             confirmation.save_to_db()
             user.send_confirmation_email()
 
-            return {"username": user.username, "password": original_pass}, 201
+            return {"message":  gettext('User successfully create, please confirm your email')}, 201
 
         except MailGunException as e:
             user.delete_from_db()
@@ -57,7 +58,7 @@ class UserRegister(Resource):
         except:
             traceback.print_exc()
             user.delete_from_db()  # rollback
-            return {"messahe": gettext("Error when creating the user")}, 500
+            return {"message": gettext("Error when creating the user")}, 500
 
 
 class User(Resource):
@@ -156,6 +157,29 @@ class UserPassword(Resource):
             return {"message": gettext("Incorrect Password")}, 400
 
 
+class UserResetPassword (Resource):
+
+    @classmethod
+    def post(cls):
+        user_json = request.get_json()["userData"]
+        userRecived = user_schema.load(user_json)
+
+        userFound = UserModel.find_by_email(userRecived.email)
+
+        if userFound:
+            new_password = uuid4().hex
+            hashed_pass = custom_pbkdf2.hash(new_password)
+            userFound.password = hashed_pass
+            userFound.save_to_db()
+
+            userFound.send_notification_email(
+                f"You new password is {new_password}")
+
+            return {"message": gettext("We have sent you an email with your new password")}, 200
+        else:
+            return {'message': gettext('User not found')}, 404
+
+
 class UserLogin(Resource):
     def post(self):
 
@@ -198,6 +222,38 @@ class UserLogin(Resource):
         except Exception as e:
             return {"message": str(e)}, 500
 
+class UserConfirmation(Resource):
+    @classmethod
+    def post (cls):
+        user_json = request.get_json()["userData"]
+        userRecived = user_schema.load(user_json)
+
+        user = UserModel.find_by_email(userRecived.email)
+
+        if not user:
+            return {'message': gettext('User not found')}, 404
+
+        try:
+            confirmation = user.most_recent_confirmation
+
+            if confirmation:
+                if confirmation.confirmed:
+                    return {"message":"Already confirmed"}, 400
+
+                confirmation.force_to_expire()
+
+            new_confirmation = ConfirmationModel(user.id)
+            new_confirmation.save_to_db()
+
+            user.send_confirmation_email()
+
+            return {"message":  gettext('Confirmation email was sent')}, 200
+
+        except MailGunException as e:
+            return {"message": str(e)}, 500
+        except:
+            traceback.print_exc()
+            return {"message":  gettext('Confirmation Resend Fail') }, 500
 
 class UserLogout(Resource):
     @jwt_required

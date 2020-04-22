@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-04-16 20:27-0500\n"
+"POT-Creation-Date: 2020-04-22 12:40-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,55 +17,76 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.8.0\n"
 
-#: resources/auth/user.py:35 resources/auth/user.py:99
+#: resources/auth/user.py:38 resources/auth/user.py:100
 msgid "A user with that username already exists"
 msgstr ""
 
-#: resources/auth/user.py:38 resources/auth/user.py:118
+#: resources/auth/user.py:41 resources/auth/user.py:119
 msgid "A user with that email already exists"
 msgstr ""
 
-#: resources/auth/user.py:60
+#: resources/auth/user.py:53
+msgid "User successfully create, please confirm your email"
+msgstr ""
+
+#: resources/auth/user.py:61
 msgid "Error when creating the user"
 msgstr ""
 
-#: resources/auth/user.py:71 resources/auth/user.py:82
+#: resources/auth/user.py:72 resources/auth/user.py:83
+#: resources/auth/user.py:180 resources/auth/user.py:234
 msgid "User not found"
 msgstr ""
 
-#: resources/auth/user.py:86
+#: resources/auth/user.py:87
 msgid "User deleted"
 msgstr ""
 
-#: resources/auth/user.py:105
+#: resources/auth/user.py:106
 msgid "Username updated"
 msgstr ""
 
-#: resources/auth/user.py:131
+#: resources/auth/user.py:132
 msgid "Internal Error"
 msgstr ""
 
-#: resources/auth/user.py:133
+#: resources/auth/user.py:134
 msgid "Email updated"
 msgstr ""
 
-#: resources/auth/user.py:153
+#: resources/auth/user.py:154
 msgid "Password updated"
 msgstr ""
 
-#: resources/auth/user.py:156
+#: resources/auth/user.py:157
 msgid "Incorrect Password"
 msgstr ""
 
-#: resources/auth/user.py:194
+#: resources/auth/user.py:178
+msgid "We have sent you an email with your new password"
+msgstr ""
+
+#: resources/auth/user.py:218
 msgid "Account not confirmed"
 msgstr ""
 
-#: resources/auth/user.py:196
+#: resources/auth/user.py:220
 msgid "Invalid Credentials"
 msgstr ""
 
-#: resources/auth/user.py:207
+#: resources/auth/user.py:232
+msgid "Confirmation resend fail"
+msgstr ""
+
+#: resources/auth/user.py:250
+msgid "Confirmation email was sent"
+msgstr ""
+
+#: resources/auth/user.py:256
+msgid "Confirmation Resend Fail"
+msgstr ""
+
+#: resources/auth/user.py:263
 msgid "Logged out"
 msgstr ""
 

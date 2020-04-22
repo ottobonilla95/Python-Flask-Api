@@ -5,7 +5,6 @@ from libs.mailgun import Mailgun
 from flask import request, url_for
 from requests import Response
 
-
 class UserModel(db.Model):
 
     __tablename__ = 'user'
@@ -56,7 +55,6 @@ class UserModel(db.Model):
         html = f"<html>{message}</html>"
 
         return Mailgun.send_email([self.email], subject, text, html)
-
 
     def save_to_db(self):
         db.session.add(self)

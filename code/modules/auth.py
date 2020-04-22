@@ -8,7 +8,10 @@ from resources.auth.user import (
     TokenRefresh,
     UserName,
     UserEmail,
-    UserPassword)
+    UserPassword, 
+    UserResetPassword,
+    UserConfirmation
+    )
 
 from resources.auth.confirmation import (
     ConfirmationByUser, Confirmation
@@ -40,4 +43,10 @@ api.add_resource(TokenRefresh, '/tokenrefresh')
 api.add_resource(Confirmation, '/user_confirm/<string:confirmation_id>')
 
 api.add_resource(ConfirmationByUser, "/confirmation/user/<int:user_id>")
+
+api.add_resource(UserResetPassword, "/userresetpassword")
+
+api.add_resource(UserConfirmation, "/userconfirmationemail")
+
+
 

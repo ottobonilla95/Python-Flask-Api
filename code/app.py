@@ -8,6 +8,18 @@ import os
 from modules.store import store_app
 from modules.auth import auth_app
 
+
+
+import os
+from os.path import join, dirname
+# from dotenv import load_dotenv
+
+dotenv_path = join(dirname(__file__), '.env')
+# load_dotenv(dotenv_path)
+
+print(dotenv_path)
+
+
 app = Flask(__name__)
 
 # Add modules
@@ -54,5 +66,7 @@ app.config.from_object("config")
 if __name__ == '__main__':
     from db import db
     db.init_app(app)
+
+
 
     app.run(debug=True)  # important to mention debug=True
