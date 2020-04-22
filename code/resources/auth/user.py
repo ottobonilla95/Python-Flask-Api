@@ -19,9 +19,11 @@ from flask_jwt_extended import (create_access_token,
 from flask_babel import gettext
 from uuid import uuid4
 
-user_schema = UserSchema()
-timedelta = datetime.timedelta(minutes=1)
+import os
 
+user_schema = UserSchema()
+
+timedelta = datetime.timedelta(minutes=int (os.environ.get('JWT_EXPIRATION_TIME', 5)))
 
 custom_pbkdf2 = pbkdf2_sha256.using(rounds=296411)
 
