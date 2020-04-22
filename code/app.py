@@ -39,6 +39,17 @@ def pingenv():
     message = os.environ.get("TEST_MESSAGE")
     return {"message":message}, 200
 
+
+@app.route("/pingenv")
+def pingenvlink():
+
+    link = request.url_root[:-1] + url_for(
+           "auth.confirmation", confirmation_id=78
+    )
+
+    return {"message":link}, 200
+
+
 @babel.localeselector
 def get_locale():
     # if a user is logged in, use the locale from the user settings

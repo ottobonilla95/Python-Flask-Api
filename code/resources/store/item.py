@@ -3,7 +3,7 @@ from flask_restful import Resource
 from models.store.item import ItemModel
 from schemas.store.item import ItemSchema
 from cdhandler import CloudinaryHandler
-from flask_jwt_extended import jwt_required, fresh_jwt_required
+from flask_jwt_extended import jwt_required, fresh_jwt_required, get_jwt_identity
 from flask_babel import gettext
 
 item_schema = ItemSchema()
@@ -72,8 +72,20 @@ class ItemCreation(Resource):
     @jwt_required
     def post(self):
 
-        item = item_schema.load(request.get_json()["itemData"])
+        item_json = request.get_json()["itemData"]
+
+        if "image" in item_json:
+            image = CloudinaryHandler.LoadImage(item_json["image"])
+            item_json["image"] = image
+        
+        item = item_schema.load(item_json)
 
         item.save_to_db()
+
         return {'item': item_schema.dump(item)}, 200
+
+
+
+      
+
 
