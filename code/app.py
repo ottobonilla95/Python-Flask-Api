@@ -8,18 +8,6 @@ import os
 from modules.store import store_app
 from modules.auth import auth_app
 
-
-
-import os
-from os.path import join, dirname
-# from dotenv import load_dotenv
-
-dotenv_path = join(dirname(__file__), '.env')
-# load_dotenv(dotenv_path)
-
-print(dotenv_path)
-
-
 app = Flask(__name__)
 
 # Add modules
@@ -40,26 +28,11 @@ def pingenv():
     return {"message":message}, 200
 
 
-@app.route("/pingenv")
-def pingenvlink():
-
-    link = request.url_root[:-1] + url_for(
-           "auth.confirmation", confirmation_id=78
-    )
-
-    return {"message":link}, 200
-
-
 @babel.localeselector
 def get_locale():
-    # if a user is logged in, use the locale from the user settings
     user = getattr(g, 'user', None)
     if user is not None:
         return user.locale
-    # otherwise try to guess the language from the user accept
-    # header the browser transmits.  We support de/fr/en in this
-    # example.  The best match wins.
-    # print("aja", request.accept_languages.best_match(app.config['SUPPORTED_LANGUAGES'].keys()))
     return request.accept_languages.best_match(app.config['SUPPORTED_LANGUAGES'].keys())
 
 
@@ -77,7 +50,5 @@ app.config.from_object("config")
 if __name__ == '__main__':
     from db import db
     db.init_app(app)
-
-
 
     app.run(debug=True)  # important to mention debug=True
