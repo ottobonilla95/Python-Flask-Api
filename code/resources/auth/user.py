@@ -198,26 +198,26 @@ class UserLogin(Resource):
             if userFound and custom_pbkdf2.verify(userRecived.password, userFound.password):
                 # identity= is what the identity() function did in security.py—now stored in the JWT
 
-                confirmaion = userFound.most_recent_confirmation
+                # confirmaion = userFound.most_recent_confirmation
 
-                if confirmaion and confirmaion.confirmed:
+                # if confirmaion and confirmaion.confirmed:
 
-                    expiration = datetime.datetime.now() + timedelta
+                expiration = datetime.datetime.now() + timedelta
 
-                    access_token = create_access_token(
-                        identity=userFound.id, fresh=True, expires_delta=timedelta)
+                access_token = create_access_token(
+                    identity=userFound.id, fresh=True, expires_delta=timedelta)
 
-                    refresh_token = create_refresh_token(userFound.id)
+                refresh_token = create_refresh_token(userFound.id)
 
-                    return {
-                        "user_id": userFound.id,
-                        "username": userFound.username,
-                        "access_token": access_token,
-                        "refresh_token": refresh_token,
-                        "expiration": expiration.isoformat()
-                    }, 200
+                return {
+                    "user_id": userFound.id,
+                    "username": userFound.username,
+                    "access_token": access_token,
+                    "refresh_token": refresh_token,
+                    "expiration": expiration.isoformat()
+                }, 200
 
-                return {"message":  gettext("Account not confirmed")}, 400
+                # return {"message":  gettext("Account not confirmed")}, 400
 
             return {"message":  gettext("Invalid Credentials")}, 404
 
