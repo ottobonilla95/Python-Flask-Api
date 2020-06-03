@@ -19,9 +19,7 @@ Features:
 ## Demo
 To see the full demo click here [Here](http://128.199.43.48/storewebapp/).
 
-username: mr.bonilla51@gmail.com
-
-password: 123456789
+Since the Mailgun account is not a premiun account, email notifications are just awailable for a few users.
 
 ## Front End App
 The frontend app was built in react.
